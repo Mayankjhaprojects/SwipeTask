@@ -6,11 +6,11 @@ import Login from "./components/Login"; // Normal user login
 import LoginPage from "./pages/LoginPage"; // Admin login
 
 // User-related pages
-import UserProfilePage from './pages/user'; // Shows another user's public profile
-import EditProfileForm from "./pages/UserProfile"; // Edit own profile
-import HomePage from "./pages/HomePage"; // User's dashboard
-import SwapRequests from "./pages/RequestInfo"; // User sees swap requests
-import SwapRequestForm from "./pages/SwapRequest"; // User sends swap request
+import UserProfilePage from './pages/user';  
+import EditProfileForm from "./pages/UserProfile";  
+import HomePage from "./pages/HomePage";  
+import SwapRequests from "./pages/RequestInfo";  
+import SwapRequestForm from "./pages/SwapRequest";  
 
 // Admin pages
 import AdminPage from "./pages/Adminpage"; // Admin dashboard
