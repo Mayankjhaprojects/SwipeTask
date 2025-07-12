@@ -17,23 +17,28 @@ const Login = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     setFormMessage('');
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', data);
 
-      // Store token and user info (optional)
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+    try {
+      const res = await axios.post('http://localhost:5000/api/users/login', data);
+
+      const user = res.data.user;
+
+      // Save token and user to localStorage
+      localStorage.setItem('token', res.data.token || '');
+      localStorage.setItem('user', JSON.stringify(user));
 
       setFormMessage('Login successful!');
+
       setTimeout(() => {
-        navigate('/home'); // or /dashboard
+        navigate('/home', { state: { id: user._id } }); // ✅ Send user ID to home
       }, 1000);
     } catch (error) {
       setFormMessage(
-        error.response?.data?.message || 'Login failed. Please check credentials.'
+        error.response?.data?.message || 'Login failed. Please try again.'
       );
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -44,64 +49,56 @@ const Login = () => {
       >
         <h2 className="text-3xl font-bold text-center mb-8">Login</h2>
 
+        {/* Email */}
         <div className="mb-6">
-          <label htmlFor="email" className="block mb-2 text-gray-700 font-medium">
-            Email
-          </label>
+          <label htmlFor="email" className="block mb-2 text-gray-700 font-medium">Email</label>
           <input
             type="email"
             id="email"
-            {...register('email', {
-              required: { value: true, message: 'Email is required' },
-            })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-200"
+            {...register('email', { required: 'Email is required' })}
+            className="w-full px-4 py-2 border rounded-xl focus:ring-indigo-200"
             placeholder="Enter your email"
           />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-          )}
+          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
 
+        {/* Password */}
         <div className="mb-6">
-          <label htmlFor="password" className="block mb-2 text-gray-700 font-medium">
-            Password
-          </label>
+          <label htmlFor="password" className="block mb-2 text-gray-700 font-medium">Password</label>
           <input
             type="password"
             id="password"
             {...register('password', {
-              required: { value: true, message: 'Password is required' },
-              minLength: { value: 3, message: 'Minimum 3 characters' },
+              required: 'Password is required',
+              minLength: { value: 3, message: 'Min 3 characters' },
             })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-200"
+            className="w-full px-4 py-2 border rounded-xl focus:ring-indigo-200"
             placeholder="Enter your password"
           />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-          )}
+          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
         </div>
 
+        {/* Message */}
         {formMessage && (
           <p
             className={`text-sm text-center mb-4 ${
-              formMessage === 'Login successful!' ? 'text-green-600' : 'text-red-500'
+              formMessage.includes('success') ? 'text-green-600' : 'text-red-500'
             }`}
           >
             {formMessage}
           </p>
         )}
 
-        <div className="flex flex-col items-center gap-4 mb-4">
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold ${
-              loading && 'opacity-50'
-            }`}
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </div>
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold ${
+            loading && 'opacity-50'
+          }`}
+        >
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
       </form>
     </div>
   );

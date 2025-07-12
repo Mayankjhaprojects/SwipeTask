@@ -14,7 +14,7 @@ import SwapRequestForm from "./pages/SwapRequest"; // User sends swap request
 
 // Admin pages
 import AdminPage from "./pages/Adminpage"; // Admin dashboard
-
+import Register from "./pages/Register"; 
 function App() {
   return (
     <Router>
@@ -33,6 +33,7 @@ function App() {
 
         {/* Admin Dashboard */}
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Future: 404 page */}
         {/* <Route path="*" element={<NotFound />} /> */}

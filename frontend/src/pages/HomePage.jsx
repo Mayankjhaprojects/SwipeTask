@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const API_BASE = 'http://localhost:5000/api';
 
-const SkillCard = ({ user, onCardClick, onRequestClick }) => {
+const SkillCard = ({ user, currentUserId, onCardClick, onRequestClick }) => {
   return (
     <div
       className="bg-white rounded-xl shadow-md hover:shadow-lg transition duration-200 p-6 grid grid-cols-1 md:grid-cols-4 gap-6 cursor-pointer"
@@ -64,6 +64,9 @@ const SkillCard = ({ user, onCardClick, onRequestClick }) => {
 
 export default function UserSearchPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentUserId = location.state?.id; // Logged-in user ID
+
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -86,22 +89,22 @@ export default function UserSearchPage() {
         <div className="flex gap-4">
           <button
             type="button"
-            onClick={() => navigate('/requests')}
-            className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-teal-400"
+            onClick={() => navigate('/requests', { state: { id: currentUserId } })}
+            className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg text-sm font-semibold"
           >
             Swap Requests
           </button>
           <button
             type="button"
-            onClick={() => navigate('/editprofile')}
-            className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-teal-400"
+            onClick={() => navigate('/editprofile', { state: { id: currentUserId } })}
+            className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg text-sm font-semibold"
           >
             Edit Profile
           </button>
         </div>
       </header>
 
-      {/* Optional Filter/Search */}
+      {/* Filter/Search (optional UI) */}
       <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center mb-10">
         <select className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 w-full md:w-auto">
           <option>Availability</option>
@@ -115,22 +118,28 @@ export default function UserSearchPage() {
         />
         <button
           type="button"
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-semibold"
         >
           Search
         </button>
       </div>
 
-      {/* User Cards */}
+      {/* Cards */}
       <div className="space-y-6">
         {users.map((user) => (
           <SkillCard
             key={user._id}
             user={user}
-           onCardClick={() => navigate(`/user?id=${user._id}`)}
-
-
-            onRequestClick={() => navigate(`/swaprequest?to=${user._id}`)}
+            currentUserId={currentUserId}
+            onCardClick={() => navigate(`/user?id=${user._id}`)}
+            onRequestClick={() =>
+              navigate('/swaprequest', {
+                state: {
+                  fromUserId: currentUserId, // logged-in user
+                  toUserId: user._id,        // card's user
+                },
+              })
+            }
           />
         ))}
       </div>

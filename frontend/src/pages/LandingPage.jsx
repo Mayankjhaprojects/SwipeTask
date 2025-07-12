@@ -30,6 +30,12 @@ const LandingPage = () => {
       >
         Get Started
       </button>
+      <button
+        onClick={() => navigate("/register")}
+        className="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded text-lg font-semibold"
+      >
+        Register
+      </button>
     </div>
   );
 };

@@ -7,6 +7,7 @@ const {
   getUserById,
   toggleVisibility,
   deleteUser,
+  loginUser,
 } = require("../controllers/userController");
 
 // POST /api/users/register
@@ -23,5 +24,8 @@ router.patch("/:id/toggle-visibility", toggleVisibility);
 
 // DELETE /api/users/:id
 router.delete("/:id", deleteUser);
+
+// POST /api/users/login
+router.post("/login", loginUser);
 
 module.exports = router;
